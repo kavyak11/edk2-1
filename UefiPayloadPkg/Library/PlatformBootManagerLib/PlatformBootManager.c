@@ -2,13 +2,16 @@
   This file include all platform action which can be customized
   by IBV/OEM.
 
-Copyright (c) 2015 - 2018, Intel Corporation. All rights reserved.<BR>
+Copyright (c) 2015 - 2021, Intel Corporation. All rights reserved.<BR>
 SPDX-License-Identifier: BSD-2-Clause-Patent
 
 **/
 
 #include "PlatformBootManager.h"
 #include "PlatformConsole.h"
+#include <Protocol/PldPlatformBootManager.h>
+
+PLD_PLATFORM_BOOTMANAGER_PROTOCOL  *mPldPlatformBootManagerInstance = NULL;
 
 VOID
 InstallReadyToLock (
@@ -156,6 +159,16 @@ PlatformBootManagerBeforeConsole (
   EFI_INPUT_KEY                F2;
   EFI_INPUT_KEY                Down;
   EFI_BOOT_MANAGER_LOAD_OPTION BootOption;
+  EFI_STATUS                   Status;
+
+  Status = gBS->LocateProtocol (&gPldPlatformBootManagerProtocolGuid, NULL, (VOID **) &mPldPlatformBootManagerInstance);
+  if (EFI_ERROR (Status)) {
+    mPldPlatformBootManagerInstance = NULL;
+  }
+  if (mPldPlatformBootManagerInstance != NULL){
+    mPldPlatformBootManagerInstance->BeforeConsole();
+    return;
+  }
 
   //
   // Register ENTER as CONTINUE key
@@ -213,6 +226,10 @@ PlatformBootManagerAfterConsole (
   EFI_GRAPHICS_OUTPUT_BLT_PIXEL  Black;
   EFI_GRAPHICS_OUTPUT_BLT_PIXEL  White;
 
+  if (mPldPlatformBootManagerInstance != NULL){
+    mPldPlatformBootManagerInstance->AfterConsole();
+    return;
+  }
   Black.Blue = Black.Green = Black.Red = Black.Reserved = 0;
   White.Blue = White.Green = White.Red = White.Reserved = 0xFF;
 
@@ -244,6 +261,9 @@ PlatformBootManagerWaitCallback (
   UINT16          TimeoutRemain
 )
 {
+  if (mPldPlatformBootManagerInstance != NULL){
+    mPldPlatformBootManagerInstance->WaitCallback (TimeoutRemain);
+  }
   return;
 }
 
@@ -260,6 +280,9 @@ PlatformBootManagerUnableToBoot (
   VOID
   )
 {
+  if (mPldPlatformBootManagerInstance != NULL){
+    mPldPlatformBootManagerInstance->UnableToBoot();
+  }
   return;
 }
 
