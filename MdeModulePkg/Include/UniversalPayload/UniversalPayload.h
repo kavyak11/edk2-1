@@ -32,12 +32,12 @@ typedef struct {
 **/
 #define PLD_SIZEOF_THROUGH_FIELD(TYPE, Field) (OFFSET_OF(TYPE, Field) + sizeof (((TYPE *) 0)->Field))
 
-#define IS_PLD_HEADER_HAS_REVISION(GuidHob, Revision) \
+#define IS_PLD_HEADER_HAS_REVISION(GuidHob, ExpectedRevision) \
   ( \
     (GuidHob != NULL) && \
     (sizeof (PLD_GENERIC_HEADER) <= GET_GUID_HOB_DATA_SIZE (GuidHob)) && \
     (((PLD_GENERIC_HEADER *) GET_GUID_HOB_DATA (GuidHob))->Length <= GET_GUID_HOB_DATA_SIZE (GuidHob)) && \
-    (((PLD_GENERIC_HEADER *) GET_GUID_HOB_DATA (GuidHob))->Revision == Revision) \
+    (((PLD_GENERIC_HEADER *) GET_GUID_HOB_DATA (GuidHob))->Revision == ExpectedRevision) \
   )
 
 #endif // __UNIVERSAL_PAYLOAD_H__
