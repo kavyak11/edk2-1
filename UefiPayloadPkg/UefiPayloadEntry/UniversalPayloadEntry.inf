@@ -62,7 +62,7 @@
   gEfiSmbiosTableGuid
   gEfiAcpiTableGuid
   gUefiSerialPortInfoGuid
-  gPldImageBaseGuid
+  gPldExtraDataGuid
 
 [FeaturePcd.IA32]
   gEfiMdeModulePkgTokenSpaceGuid.PcdDxeIplSwitchToLongMode      ## CONSUMES
