@@ -28,11 +28,11 @@ if not %ERRORLEVEL% == 0 exit /b 1
 @REM So, if we don't remove the uefi_fv section before adding, there will be 2 uefi_fv sections.
 @REM
 @REM Remove .upld.uefi_fv section because entry.elf isn't updated if dependent sources are not changed.
-"C:\Program Files\LLVM\bin\llvm-objcopy" -I elf64-x86-64 -O elf64-x86-64 --remove-section .upld.uefi_fv %ENTRY%
+"C:\linux\LLVM\bin\llvm-objcopy" -I elf64-x86-64 -O elf64-x86-64 --remove-section .upld.uefi_fv %ENTRY%
 @if not %ERRORLEVEL% == 0 exit /b 1
-"C:\Program Files\LLVM\bin\llvm-objcopy" -I elf64-x86-64 -O elf64-x86-64 --add-section .upld.uefi_fv=%FV% %ENTRY%
+"C:\linux\LLVM\bin\llvm-objcopy" -I elf64-x86-64 -O elf64-x86-64 --add-section .upld.uefi_fv=%FV% %ENTRY%
 @if not %ERRORLEVEL% == 0 exit /b 1
-"C:\Program Files\LLVM\bin\llvm-objcopy" -I elf64-x86-64 -O elf64-x86-64 --set-section-alignment .upld.uefi_fv=16 %ENTRY%
+"C:\linux\LLVM\bin\llvm-objcopy" -I elf64-x86-64 -O elf64-x86-64 --set-section-alignment .upld.uefi_fv=16 %ENTRY%
 @if not %ERRORLEVEL% == 0 exit /b 1
 
 :ovmf

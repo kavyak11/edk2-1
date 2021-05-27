@@ -703,7 +703,7 @@
       PcdLib|MdePkg/Library/BasePcdLibNull/BasePcdLibNull.inf
   }
 
-  UefiPayloadPkg/ElfLoaderPeim/ElfLoaderPeim.inf
+  UefiPayloadPkg/PayloadLoaderPeim/PayloadLoaderPeim.inf
   MdeModulePkg/Core/DxeIplPeim/DxeIpl.inf {
     <LibraryClasses>
       NULL|MdeModulePkg/Library/LzmaCustomDecompressLib/LzmaCustomDecompressLib.inf
