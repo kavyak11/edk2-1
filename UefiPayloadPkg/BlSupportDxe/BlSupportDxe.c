@@ -189,8 +189,20 @@ BlDxeEntryPoint (
     AcpiTableHob = (UNIVERSAL_PAYLOAD_ACPI_TABLE *)GET_GUID_HOB_DATA (GuidHob);
     DEBUG ((DEBUG_ERROR, "Install Acpi Table at 0x%lx \n", AcpiTableHob->Rsdp));
     Status = SetPcdsUsingAcpiTable ((UINT64)(UINTN)AcpiTableHob->Rsdp);
+  //
+  // Set PcdPciExpressBaseAddress and PcdPciExpressBaseSize by HOB info
+  //
     ASSERT_EFI_ERROR (Status);
-  }
+     DEBUG ((DEBUG_ERROR, "[KBT] AcpiBoardInfo->PcieBaseAddress: %lx \n",AcpiBoardInfo->PcieBaseAddress));
+     DEBUG ((DEBUG_ERROR, "[KBT] AcpiBoardInfo->PcieBaseSize: %lx \n",AcpiBoardInfo->PcieBaseSize));
+     DEBUG ((DEBUG_ERROR, "[KBT] AcpiBoardInfo->PmTimerRegBase: %lx \n",AcpiBoardInfo->PmTimerRegBase));
+     DEBUG ((DEBUG_ERROR, "[KBT] AcpiBoardInfo->ResetValue: %lx \n",AcpiBoardInfo->ResetValue));
+     DEBUG ((DEBUG_ERROR, "[KBT] AcpiBoardInfo->PmEvtBase: %lx \n",AcpiBoardInfo->PmEvtBase));
+     DEBUG ((DEBUG_ERROR, "[KBT] AcpiBoardInfo->PmGpeEnBase: %lx \n",AcpiBoardInfo->PmGpeEnBase));
+     DEBUG ((DEBUG_ERROR, "[KBT] AcpiBoardInfo->PmCtrlRegBase: %lx \n",AcpiBoardInfo->PmCtrlRegBase));
+     DEBUG ((DEBUG_ERROR, "[KBT] AcpiBoardInfo->ResetRegAddress: %lx \n",AcpiBoardInfo->ResetRegAddress));
+
+  }*/
 
   //
   // Find the frame buffer information and update PCDs

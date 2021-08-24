@@ -35,3 +35,4 @@
 
 [Pcd]
   gUefiPayloadPkgTokenSpaceGuid.PcdAcpiPm1TimerRegister
+  gUefiPayloadPkgTokenSpaceGuid.PcdAcpiPm1TimerRegister

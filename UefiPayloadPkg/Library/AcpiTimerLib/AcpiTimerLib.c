@@ -28,6 +28,7 @@ InternalAcpiGetTimerTick (
   VOID
   )
 {
+  if (mPmTimerReg == 0) {
 
   ASSERT (PcdGet32 (PcdAcpiPm1TimerRegister) != 0);
   return IoRead32 (PcdGet32 (PcdAcpiPm1TimerRegister));
