@@ -11,7 +11,7 @@
   goto ovmf
 )
 
-call build -p UefiPayloadPkg\UefiPayloadPkg.dsc -a X64 -D UNIVERSAL_PAYLOAD=TRUE -t VS2019 -y upllog.txt
+call build -p UefiPayloadPkg\UefiPayloadPkg.dsc -a X64 -D UNIVERSAL_PAYLOAD=TRUE -t CLANGPDB -y upllog.txt -D EMU_VARIABLE_ENABLE=FALSE
 if not %ERRORLEVEL% == 0 exit /b 1
 
 :entry
@@ -20,7 +20,7 @@ if not %ERRORLEVEL% == 0 exit /b 1
 
 
 :objcopy
-@set FV=Build\UefiPayloadPkgX64\DEBUG_VS2019\FV\DXEFV.Fv
+@set FV=Build\UefiPayloadPkgX64\DEBUG_CLANGPDB\FV\DXEFV.Fv
 @set ENTRY=Build\UefiPayloadPkgX64\DEBUG_CLANGDWARF\X64\UefiPayloadPkg\UefiPayloadEntry\UniversalPayloadEntry\DEBUG\UniversalPayloadEntry.dll
 
 @REM 
@@ -36,4 +36,4 @@ if not %ERRORLEVEL% == 0 exit /b 1
 @if not %ERRORLEVEL% == 0 exit /b 1
 
 :ovmf
-call build -p OvmfPkg\OvmfPkgPol.dsc -a IA32 -a X64 -D DEBUG_ON_SERIAL_PORT -t VS2019 -y ovmflog.txt
+call build -p OvmfPkg\OvmfPkgPol.dsc -a IA32 -a X64 -D DEBUG_ON_SERIAL_PORT -t CLANGPDB -y ovmflog.txt
