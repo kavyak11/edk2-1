@@ -28,8 +28,6 @@ InternalAcpiGetTimerTick (
   VOID
   )
 {
-  if (mPmTimerReg == 0) {
-
   ASSERT (PcdGet32 (PcdAcpiPm1TimerRegister) != 0);
   return IoRead32 (PcdGet32 (PcdAcpiPm1TimerRegister));
 }
@@ -208,7 +206,7 @@ GetTimeInNanoSecond (
   UINT64  Frequency;
   UINT64  NanoSeconds;
   UINT64  Remainder;
-  INTN    Shift;
+  UINTN    Shift;
 
   Frequency = GetPerformanceCounterProperties (NULL, NULL);
 

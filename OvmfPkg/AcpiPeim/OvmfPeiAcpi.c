@@ -17,7 +17,7 @@
 #pragma pack(1)
 typedef struct {
   EFI_ACPI_DESCRIPTION_HEADER Header;
-  EFI_PHYSICAL_ADDRESS        Tables[4];
+  EFI_PHYSICAL_ADDRESS        Tables[2];
 }XSDT_TABLE_STRUCT;
 #pragma pack()
 
@@ -188,7 +188,7 @@ ProcessCmdAllocate (
     return Status;
   }
 
-  PeiServicesAllocatePool (sizeof*Blob,&Blob);
+  PeiServicesAllocatePool (sizeof*Blob, (void **)&Blob);
   if (Blob == NULL) {
     Status = EFI_OUT_OF_RESOURCES;
     goto FreePages;
@@ -418,7 +418,7 @@ ParseAcpi(
   EFI_ACPI_HIGH_PRECISION_EVENT_TIMER_TABLE_HEADER                                      *Hpet;
   EFI_ACPI_6_3_ROOT_SYSTEM_DESCRIPTION_POINTER                                          *Rsdp;
   XSDT_TABLE_STRUCT                                                                     *Xsdt;
-  PLD_ACPI_TABLE                                                                        *AcpiTableHob;
+  UNIVERSAL_PAYLOAD_ACPI_TABLE                                                          *AcpiTableHob;
   UINT32                                                                                NodeCount;
   EFI_PHYSICAL_ADDRESS                                                                  PhyAddr;
   EFI_STATUS                                                                            Status;
@@ -515,11 +515,15 @@ ParseAcpi(
   Xsdt->Header.Checksum        = 0;
   Xsdt->Header.Checksum        = CalculateCheckSum8 ((UINT8 *)Xsdt, Xsdt->Header.Length);
   Xsdt->Tables[0]              = (EFI_PHYSICAL_ADDRESS) Fadt;
-  Xsdt->Tables[1]              = (EFI_PHYSICAL_ADDRESS) Apic;
-  Xsdt->Tables[2]              = (EFI_PHYSICAL_ADDRESS) Hpet;
-  Xsdt->Tables[3]              = (EFI_PHYSICAL_ADDRESS) MmCfgHdr;
+  //Xsdt->Tables[13]              = (EFI_PHYSICAL_ADDRESS) Apic;
+  //Xsdt->Tables[2]              = (EFI_PHYSICAL_ADDRESS) Hpet;
+  Xsdt->Tables[1]              = (EFI_PHYSICAL_ADDRESS) MmCfgHdr;
+  Fadt->FirmwareCtrl = 0;
+  Fadt->Dsdt = 0;
 
-  AcpiTableHob =(PLD_ACPI_TABLE*) BuildGuidHob (&gPldAcpiTableGuid, sizeof (PLD_ACPI_TABLE));
+  AcpiTableHob =(UNIVERSAL_PAYLOAD_ACPI_TABLE*) BuildGuidHob (&gUniversalPayloadAcpiTableGuid, sizeof (UNIVERSAL_PAYLOAD_ACPI_TABLE));
+  AcpiTableHob->Header.Length = sizeof(UNIVERSAL_PAYLOAD_ACPI_TABLE);
+  AcpiTableHob->Header.Revision = UNIVERSAL_PAYLOAD_ACPI_TABLE_REVISION;
   AcpiTableHob->Rsdp = (EFI_PHYSICAL_ADDRESS)Rsdp;
 
   //
@@ -781,7 +785,7 @@ OvmfAcpiEntrypoint (
     return EFI_PROTOCOL_ERROR;
   }
 
-  PeiServicesAllocatePool (FwCfgSize,&LoaderStart);
+  PeiServicesAllocatePool (FwCfgSize, (void **)&LoaderStart);
   if (LoaderStart == NULL) {
     return EFI_OUT_OF_RESOURCES;
   }
@@ -836,7 +840,7 @@ Tracker = OrderedCollectionInit (BlobCompare, BlobKeyCompare);
       DEBUG ((DEBUG_ERROR, "%a:Error",__FUNCTION__));
     }
   }
-   PeiServicesAllocatePool (INSTALLED_TABLES_MAX * sizeof *InstalledKey,&InstalledKey);
+   PeiServicesAllocatePool (INSTALLED_TABLES_MAX * sizeof *InstalledKey, (void **)&InstalledKey);
   if (InstalledKey == NULL) {
     Status = EFI_OUT_OF_RESOURCES;
   }

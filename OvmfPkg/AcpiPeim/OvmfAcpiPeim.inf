@@ -45,7 +45,7 @@
   HobLib
 
 [Guids]
-  gPldAcpiTableGuid
+  gUniversalPayloadAcpiTableGuid
 
 [Depex]
   TRUE

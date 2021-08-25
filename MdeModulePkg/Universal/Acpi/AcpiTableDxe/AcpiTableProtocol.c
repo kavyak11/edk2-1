@@ -541,7 +541,7 @@ AddTableToList (
   AllocPhysAddress                  = 0xFFFFFFFF;
   CurrentTableList->TableSize       = CurrentTableSize;
   CurrentTableList->PoolAllocation  = FALSE;
-
+  DEBUG ((DEBUG_ERROR, "CurrentTableSize%x\n", CurrentTableSize));
   //
   // Allocation memory type depends on the type of the table
   //
