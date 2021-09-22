@@ -20,6 +20,7 @@
 #include <OvmfPlatforms.h>
 #include <Library/BaseMemoryLib.h>
 
+#define PROTO_BUFFER_POC
 STATIC UNIVERSAL_PAYLOAD_PCI_ROOT_BRIDGE_APERTURE mNonExistAperture = { MAX_UINT64, 0 };
 
 EFI_STATUS
@@ -290,7 +291,12 @@ PciHostBridgeGetRootBridges1 (
     );
 }
 
-
+RETURN_STATUS
+EFIAPI
+SetProtoBuffer (
+  OUT VOID                **Buffer,
+  OUT UINTN               *Size
+  );
 
 /**
   Publish the FV that includes the UPL.
@@ -303,7 +309,9 @@ UplInitialization (
   )
 {
   EFI_FIRMWARE_VOLUME_HEADER          *UplFv;
+#ifndef PROTO_BUFFER_POC
   UNIVERSAL_PAYLOAD_SERIAL_PORT_INFO  *Serial;
+#endif
   UNIVERSAL_PAYLOAD_PCI_ROOT_BRIDGES  *PciRootBridgeInfo;
   UINT16                              HostBridgeDevId;
   UINTN                               Pmba;
@@ -332,7 +340,7 @@ UplInitialization (
       ASSERT (FALSE);
   }
 
-
+#ifndef PROTO_BUFFER_POC
   Serial = BuildGuidHob (&gUniversalPayloadSerialPortInfoGuid, sizeof (UNIVERSAL_PAYLOAD_SERIAL_PORT_INFO));
   Serial->BaudRate = PcdGet32 (PcdSerialBaudRate);
   Serial->RegisterBase = PcdGet64 (PcdSerialRegisterBase);
@@ -340,6 +348,15 @@ UplInitialization (
   Serial->Header.Revision = UNIVERSAL_PAYLOAD_SERIAL_PORT_INFO_REVISION;
   Serial->Header.Length = sizeof (UNIVERSAL_PAYLOAD_SERIAL_PORT_INFO);
   Serial->UseMmio = PcdGetBool (PcdSerialUseMmio);
+#else
+  VOID   *Data;
+  VOID   *Buffer;
+  UINTN  Size;
+  SetProtoBuffer (&Buffer, &Size);
+  Data = BuildGuidHob (&gProtoBufferGuid, Size);
+  CopyMem(Data, Buffer, Size);
+#endif
+
 
   UNIVERSAL_PAYLOAD_PCI_ROOT_BRIDGE * RootBridge;
   UINTN         RootBridgeCount;

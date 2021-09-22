@@ -1,0 +1,44 @@
+## @file
+#  Platform Hook Library instance for UART device.
+#
+#  Copyright (c) 2015, Intel Corporation. All rights reserved.<BR>
+#
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = ProtocolBufferLib
+  FILE_GUID                      = 2E3C405C-41D3-4B43-951E-2EAAEE75763E
+  MODULE_TYPE                    = BASE
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = ProtocolBufferLib
+
+
+[Sources]
+  ProtoBufferSetLib.c
+  nanopb/pb_encode.c 
+  nanopb/pb_decode.c 
+  nanopb/pb_common.c
+  UniveralPayloadProtoBuffer.pb.c
+
+[LibraryClasses]
+  PcdLib
+
+[Pcd]
+  gEfiMdeModulePkgTokenSpaceGuid.PcdSerialBaudRate
+  gEfiMdeModulePkgTokenSpaceGuid.PcdSerialRegisterBase
+  gEfiMdeModulePkgTokenSpaceGuid.PcdSerialRegisterStride
+  gEfiMdeModulePkgTokenSpaceGuid.PcdSerialUseMmio
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  UefiPayloadPkg/UefiPayloadPkg.dec
+
+[BuildOptions]
+  GCC:*_CLANGPDB_*_CC_FLAGS = -D PB_SYSTEM_HEADER=\"Proto.h\"  -Wno-implicit-function-declaration
+  GCC:*_CLANGDWARF_*_CC_FLAGS = -D PB_SYSTEM_HEADER=\"Proto.h\" -Wno-implicit-function-declaration
+  
+  MSFT:*_*_*_CC_FLAGS = /D PB_SYSTEM_HEADER=\"Proto.h\"

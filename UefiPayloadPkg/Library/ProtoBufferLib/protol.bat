@@ -1,0 +1,1 @@
+C:\code\Payload\edk2_nanopb\nanopb-0.4.5-windows-x86\generator-bin\nanopb_generator.exe UniveralPayloadProtoBuffer.proto

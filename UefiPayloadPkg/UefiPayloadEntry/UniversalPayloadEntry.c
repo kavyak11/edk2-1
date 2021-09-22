@@ -361,6 +361,13 @@ BuildHobs (
   return EFI_SUCCESS;
 }
 
+RETURN_STATUS
+EFIAPI
+GetProtoBuffer (
+  OUT VOID                *Buffer,
+  OUT UINTN               Size
+  );
+
 /**
   Entry point to the C language phase of UEFI payload.
 
@@ -376,15 +383,23 @@ _ModuleEntryPoint (
   PHYSICAL_ADDRESS              DxeCoreEntryPoint;
   EFI_PEI_HOB_POINTERS          Hob;
   EFI_FIRMWARE_VOLUME_HEADER    *DxeFv;
-
+  UINT8                         *GuidHob;
   mHobList = (VOID *) BootloaderParameter;
   DxeFv    = NULL;
+
+  GuidHob = GetFirstGuidHob (&gProtoBufferGuid);
+  if (GuidHob == NULL) {
+    return EFI_NOT_FOUND;
+  }
+  GetProtoBuffer (GET_GUID_HOB_DATA (GuidHob), GET_GUID_HOB_DATA_SIZE(GuidHob));
+
   // Call constructor for all libraries
   ProcessLibraryConstructorList ();
 
+  
   DEBUG ((DEBUG_INFO, "Entering Universal Payload...\n"));
   DEBUG ((DEBUG_INFO, "sizeof(UINTN) = 0x%x\n", sizeof(UINTN)));
-
+  GetProtoBuffer (GET_GUID_HOB_DATA (GuidHob), GET_GUID_HOB_DATA_SIZE(GuidHob));
   DEBUG_CODE (
     //
     // Dump the Hobs from boot loader

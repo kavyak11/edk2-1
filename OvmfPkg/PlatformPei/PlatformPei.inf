@@ -50,6 +50,7 @@
   gEfiXenInfoGuid
   gUniversalPayloadSerialPortInfoGuid
   gUniversalPayloadPciRootBridgeInfoGuid
+  gProtoBufferGuid
 
 [LibraryClasses]
   BaseLib

@@ -1,0 +1,10 @@
+
+syntax = "proto2";
+
+message UNIVERSAL_PAYLOAD_SERIAL_PORT_INFO_PROTO {
+  required int32 UseMmio          = 1;
+  required int32 RegisterStride   = 2;
+  required int32 BaudRate         = 3;
+  required int64 RegisterBase     = 4;
+  optional bytes RawBytes         = 5;
+}

@@ -716,7 +716,10 @@
   }
 
   OvmfPkg/QemuUniversalPayload/AcpiPeim/OvmfAcpiPeim.inf 
-  OvmfPkg/PlatformPei/PlatformPei.inf
+  OvmfPkg/PlatformPei/PlatformPei.inf {
+    <LibraryClasses>
+      NULL|UefiPayloadPkg/Library/ProtoBufferLib/ProtoBufferSetLib.inf
+  }
   UefiCpuPkg/Universal/Acpi/S3Resume2Pei/S3Resume2Pei.inf {
     <LibraryClasses>
 !if $(SMM_REQUIRE) == TRUE
