@@ -1,5 +1,5 @@
 #include <nanopb/pb_encode.h>
-#include "UniveralPayloadProtoBuffer.pb.h"
+#include "UniversalPayloadProtoBuffer.pb.h"
 #include <Base.h>
 #include <Library/DebugLib.h>
 #include "Proto.h"
@@ -45,42 +45,36 @@ SetProtoBuffer (
   OUT UINTN               *Size
   )
 {
-
-    //UINT8 buffer[128];
     UINT8* buffer = AllocatePool(128);
     UINTN message_length;
     BOOLEAN status;
-    VOID *pointer;
     UsefulBufC buf;
-    UINT8 buffer1[128];
-
-    buffer1[5] = 0xFE;
-    buffer1[4] = 0xDC;
-    buffer1[3] = 0xBA;
-    buffer1[11] = 0xFE;
-    buffer1[12] = 0xDC;
-    buffer1[13] = 0x11;
+    UINT32 buffer1[] = { 0x12345678, 0x0, 0x90ABCDEF};
     buf.ptr = buffer1;
-
-    buf.len = 15;
-    pointer = (VOID*)&buf;
+    buf.len = ARRAY_SIZE(buffer1) * 4;
 
 
-    UNIVERSAL_PAYLOAD_SERIAL_PORT_INFO_PROTO SerialPortInfo = UNIVERSAL_PAYLOAD_SERIAL_PORT_INFO_PROTO_init_zero;
+    MY_PROTO_BUFFER                          MyProtoBuffer  = MY_PROTO_BUFFER_init_zero;
+
 
     pb_ostream_t stream = pb_ostream_from_buffer(buffer, 128);
     
+    MyProtoBuffer.has_SerialPortInfo = TRUE;
+    MyProtoBuffer.SerialPortInfo.BaudRate = PcdGet32 (PcdSerialBaudRate);
+    MyProtoBuffer.SerialPortInfo.RegisterBase = PcdGet64 (PcdSerialRegisterBase);
+    MyProtoBuffer.SerialPortInfo.RegisterStride = (UINT8) PcdGet32 (PcdSerialRegisterStride);
+    MyProtoBuffer.SerialPortInfo.UseMmio = PcdGetBool (PcdSerialUseMmio);
+    MyProtoBuffer.RawBytes.funcs.encode = &write_string; 
+    MyProtoBuffer.RawBytes.arg = (VOID*)&buf; 
+    
 
-    SerialPortInfo.BaudRate = PcdGet32 (PcdSerialBaudRate);
-    SerialPortInfo.RegisterBase = PcdGet64 (PcdSerialRegisterBase);
-    SerialPortInfo.RegisterStride = (UINT8) PcdGet32 (PcdSerialRegisterStride);
-    SerialPortInfo.UseMmio = PcdGetBool (PcdSerialUseMmio);
-    SerialPortInfo.RawBytes.funcs.encode = &write_string; 
-    SerialPortInfo.RawBytes.arg = pointer; 
+    MyProtoBuffer.has_MyGuid = TRUE;
+    CopyMem(MyProtoBuffer.MyGuid, &gUefiPayloadPkgTokenSpaceGuid, 16);
+
     
 
     /* Now we are ready to encode the message! */
-    status = pb_encode(&stream, UNIVERSAL_PAYLOAD_SERIAL_PORT_INFO_PROTO_fields, &SerialPortInfo);
+    status = pb_encode(&stream, MY_PROTO_BUFFER_fields, &MyProtoBuffer);
     message_length = (UINTN)stream.bytes_written;
     *Buffer = buffer;
     *Size = message_length;

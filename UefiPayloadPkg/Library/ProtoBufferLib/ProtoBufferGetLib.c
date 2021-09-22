@@ -8,7 +8,7 @@
 #include <Library/HobLib.h>
 #include <nanopb/pb_encode.h>
 #include <nanopb/pb_decode.h>
-#include "UniveralPayloadProtoBuffer.pb.h"
+#include "UniversalPayloadProtoBuffer.pb.h"
 #include <Base.h>
 #include <Library/DebugLib.h>
 #include "Proto.h"
@@ -67,20 +67,19 @@ GetProtoBuffer (
   )
 {
 
-  VOID *pointer;
   UsefulBufC buf;
-  pointer = &buf;
+
   /* Allocate space for the decoded message. */
-  UNIVERSAL_PAYLOAD_SERIAL_PORT_INFO_PROTO SerialPortInfo = UNIVERSAL_PAYLOAD_SERIAL_PORT_INFO_PROTO_init_zero;
-  
+  MY_PROTO_BUFFER                          MyProtoBuffer  = MY_PROTO_BUFFER_init_zero;
+
   /* Create a stream that reads from the buffer. */
   pb_istream_t stream = pb_istream_from_buffer(Buffer, Size);
   UINTN status;
   /* Now we are ready to decode the message. */
 
-  SerialPortInfo.RawBytes.funcs.decode = &read_string; 
-  SerialPortInfo.RawBytes.arg = pointer; 
-  status = pb_decode(&stream, UNIVERSAL_PAYLOAD_SERIAL_PORT_INFO_PROTO_fields, &SerialPortInfo);
+  MyProtoBuffer.RawBytes.funcs.decode = &read_string; 
+  MyProtoBuffer.RawBytes.arg = &buf; 
+  status = pb_decode(&stream, MY_PROTO_BUFFER_fields, &MyProtoBuffer);
   
   /* Check for errors... */
 
@@ -89,18 +88,19 @@ GetProtoBuffer (
   
   PrintHex1((UINT8 *)(buf.ptr), (UINT16)buf.len );
 
-  DEBUG ((DEBUG_ERROR, " SerialPortInfo.BaudRate       =%d\n",    SerialPortInfo.BaudRate      ));
-  DEBUG ((DEBUG_ERROR, " SerialPortInfo.RegisterBase   =0x%x\n",  SerialPortInfo.RegisterBase  ));
-  DEBUG ((DEBUG_ERROR, " SerialPortInfo.RegisterStride =0x%x\n",  SerialPortInfo.RegisterStride));
-  DEBUG ((DEBUG_ERROR, " SerialPortInfo.UseMmio        =0x%x\n",  SerialPortInfo.UseMmio       ));
-
+  DEBUG ((DEBUG_ERROR, " SerialPortInfo.BaudRate       =%d\n",    MyProtoBuffer.SerialPortInfo.BaudRate      ));
+  DEBUG ((DEBUG_ERROR, " SerialPortInfo.RegisterBase   =0x%x\n",  MyProtoBuffer.SerialPortInfo.RegisterBase  ));
+  DEBUG ((DEBUG_ERROR, " SerialPortInfo.RegisterStride =0x%x\n",  MyProtoBuffer.SerialPortInfo.RegisterStride));
+  DEBUG ((DEBUG_ERROR, " SerialPortInfo.UseMmio        =0x%x\n",  MyProtoBuffer.SerialPortInfo.UseMmio       ));
+  DEBUG ((DEBUG_ERROR, " MyGuid                        =0x%g\n",  MyProtoBuffer.MyGuid       ));
+  //gUefiPayloadPkgTokenSpaceGuid  = {0x1d127ea, 0xf6f1, 0x4ef6, {0x94, 0x15, 0x8a, 0x0, 0x0, 0x93, 0xf8, 0x9d}}
   UNIVERSAL_PAYLOAD_SERIAL_PORT_INFO  *Serial;
   Serial = BuildGuidHob (&gUniversalPayloadSerialPortInfoGuid, sizeof (UNIVERSAL_PAYLOAD_SERIAL_PORT_INFO));
-  Serial->BaudRate = (UINT32)SerialPortInfo.BaudRate;
-  Serial->RegisterBase = (UINT64)SerialPortInfo.RegisterBase;
-  Serial->RegisterStride = (UINT32)SerialPortInfo.RegisterStride;
+  Serial->BaudRate       = (UINT32)MyProtoBuffer.SerialPortInfo.BaudRate;
+  Serial->RegisterBase   = (UINT64)MyProtoBuffer.SerialPortInfo.RegisterBase;
+  Serial->RegisterStride = (UINT32)MyProtoBuffer.SerialPortInfo.RegisterStride;
+  Serial->UseMmio        = (BOOLEAN)MyProtoBuffer.SerialPortInfo.UseMmio;
   Serial->Header.Revision = UNIVERSAL_PAYLOAD_SERIAL_PORT_INFO_REVISION;
   Serial->Header.Length = sizeof (UNIVERSAL_PAYLOAD_SERIAL_PORT_INFO);
-  Serial->UseMmio = (BOOLEAN)SerialPortInfo.UseMmio;
   return 0;
 }

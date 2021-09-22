@@ -21,7 +21,7 @@
   nanopb/pb_encode.c 
   nanopb/pb_decode.c 
   nanopb/pb_common.c
-  UniveralPayloadProtoBuffer.pb.c
+  UniversalPayloadProtoBuffer.pb.c
 
 [LibraryClasses]
   PcdLib

@@ -21,7 +21,7 @@
   nanopb/pb_encode.c 
   nanopb/pb_decode.c 
   nanopb/pb_common.c
-  UniveralPayloadProtoBuffer.pb.c
+  UniversalPayloadProtoBuffer.pb.c
 
 [LibraryClasses]
   PcdLib
@@ -32,6 +32,8 @@
   gEfiMdeModulePkgTokenSpaceGuid.PcdSerialRegisterStride
   gEfiMdeModulePkgTokenSpaceGuid.PcdSerialUseMmio
 
+[Guids]
+  gUefiPayloadPkgTokenSpaceGuid
 [Packages]
   MdePkg/MdePkg.dec
   MdeModulePkg/MdeModulePkg.dec
