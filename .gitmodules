@@ -20,3 +20,6 @@
 [submodule "RedfishPkg/Library/JsonLib/jansson"]
 	path = RedfishPkg/Library/JsonLib/jansson
 	url = https://github.com/akheron/jansson
+[submodule "UefiPayloadPkg/Library/ProtoBufferLib/nanopb"]
+	path = UefiPayloadPkg/Library/ProtoBufferLib/nanopb
+	url = https://github.com/nanopb/nanopb.git
