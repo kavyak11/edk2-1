@@ -36,12 +36,9 @@ typedef UINTN    size_t;
 typedef BOOLEAN  bool;
 
 
-#define _byteswap_uint64
-#define _byteswap_uint64
-#define _byteswap_ulong
-#define _byteswap_ulong
-#define _byteswap_ushort
-#define _byteswap_ushort
+#define _byteswap_uint64(value)    SwapBytes64((UINT64)value)
+#define _byteswap_ulong(value)     SwapBytes32((UINT32)value)
+#define _byteswap_ushort(value)    SwapBytes16((UINT16)value)
 
 
 #define FILE VOID
