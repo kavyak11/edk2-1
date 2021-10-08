@@ -22,6 +22,8 @@
 #define memmove                     CopyMem
 #define memcmp(buf1,buf2,count)           (int)(CompareMem(buf1,buf2,(UINTN)(count)))
 #define strlen(str)                 (size_t)(AsciiStrnLenS(str, MAX_STRING_SIZE))
+#define static_assert(x,y)          _Static_assert(x,#y)
+
 typedef INT8     int8_t;
 typedef INT16    int16_t;
 typedef INT32    int32_t;
